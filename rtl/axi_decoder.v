@@ -1,3 +1,4 @@
+/*
 MODULE OVERVIEW
 ---------------
 This module is a simple **AXI address decoder** used inside a small SoC.
