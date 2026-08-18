@@ -130,40 +130,39 @@ Final GDSII / KLayout View
 ![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/aaff1535f34c61e5af1d9f5bcebc35f3a194676d/screenshots/gdsII/gds2.png)
 The final GDSII represents the completed physical implementation of the RISC-V based SoC subsystem after synthesis, floorplanning, placement, CTS, routing, extraction, timing analysis, and physical verification.
 
-🛠️ Technology & Tools
-Domain	Tools / Technologies
-Processor	PicoRV32 RISC-V
-HDL	Verilog
-Firmware	C, RISC-V Assembly
-Simulation	Verilator, GTKWave
-Synthesis	Yosys
-Physical Design	OpenLane, OpenROAD
-STA	OpenSTA
-Layout / DRC	Magic, KLayout
-LVS	Netgen
-PDK	SKY130
-Scripting	Python, Tcl, Bash
-📂 Project Scope
+## 🛠️ Technology & Tools
+| Domain              | Tools / Technologies |
+| ------------------- | -------------------- |
+| **Processor**       | PicoRV32 RISC-V      |
+| **HDL**             | Verilog              |
+| **Firmware**        | C, RISC-V Assembly   |
+| **Simulation**      | Verilator, GTKWave   |
+| **Synthesis**       | Yosys                |
+| **Physical Design** | OpenLane, OpenROAD   |
+| **STA**             | OpenSTA              |
+| **Layout / DRC**    | Magic, KLayout       |
+| **LVS**             | Netgen               |
+| **PDK**             | SKY130               |
+| **Scripting**       | Python, Tcl, Bash    |
 
+## 📂 Project Scope
 This repository documents the complete implementation journey:
-
 Firmware → RTL → Verification → Synthesis → Floorplan → Power Planning → Placement → CTS → Routing → Extraction → STA → MCA → Power → DRC/LVS → GDSII
-
 Detailed implementation results, reports, and screenshots are provided throughout the repository.
 
-📌 Project Highlights
-RISC-V based SoC subsystem
-PicoRV32 processor integration
-CPU-to-AXI4-Lite bridge
-1 Master / 3 Slave AXI4-Lite architecture
-ROM + SRAM + UART integration
-Firmware-to-hardware execution flow
-RTL functional verification
-Technology-mapped synthesis
-Complete RTL-to-GDSII physical implementation
-Post-route timing analysis
-RC-Min / RC-Nom / RC-Max MCA
-Power analysis
-DRC and LVS verification
-Final GDSII generation
+## 📌 Project Highlights
+* RISC-V based SoC subsystem
+* PicoRV32 processor integration
+* CPU-to-AXI4-Lite bridge
+* 1 Master / 3 Slave AXI4-Lite architecture
+* ROM + SRAM + UART integration
+*Firmware-to-hardware execution flow
+* RTL functional verification
+* Technology-mapped synthesis
+* Complete RTL-to-GDSII physical implementation
+* Post-route timing analysis
+* RC-Min / RC-Nom / RC-Max MCA
+* Power analysis
+* DRC and LVS verification
+* Final GDSII generation
   
