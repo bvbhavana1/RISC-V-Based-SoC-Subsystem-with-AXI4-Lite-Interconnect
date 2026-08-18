@@ -812,7 +812,7 @@ Gate-Level Netlist
 The RTL hierarchy was elaborated to construct the complete synthesized design representation.
 # 7.3 Logic Optimization
 Logic optimization was performed to simplify the design and improve implementation efficiency.
-## 7.4 DFF Mapping
+# 7.4 DFF Mapping
 Sequential logic was mapped to technology-specific flip-flop cells.
 # 7.5 Technology Mapping
 The optimized RTL was mapped to standard cells from the SKY130 library.
