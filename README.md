@@ -57,7 +57,7 @@ The design was taken through the complete physical implementation flow and evalu
 | **Physical Verification** | DRC                 | **0 violations** |
 | **Physical Verification** | LVS                 |     **0 errors** |
 
-##⏱️ Multi-Corner Timing Results
+## ⏱️ Multi-Corner Timing Results
 The design was evaluated under three RC extraction conditions to analyze timing robustness.
 | RC Corner  | Setup Slack |  Hold Slack |
 | ---------- | ----------: | ----------: |
@@ -66,6 +66,7 @@ The design was evaluated under three RC extraction conditions to analyze timing 
 | **RC-Max** | **6.61 ns** | **0.28 ns** |
 
 ## RTL-to-GDSII Flow
+```text 
                     DESIGN & VERIFICATION
                             │
                             ▼
@@ -124,5 +125,45 @@ The design was evaluated under three RC extraction conditions to analyze timing 
                             ▼
                          GDSII
 ```                    
+## 📸 Final Layout
+Final GDSII / KLayout View
+![image alt]()
+The final GDSII represents the completed physical implementation of the RISC-V based SoC subsystem after synthesis, floorplanning, placement, CTS, routing, extraction, timing analysis, and physical verification.
 
+🛠️ Technology & Tools
+Domain	Tools / Technologies
+Processor	PicoRV32 RISC-V
+HDL	Verilog
+Firmware	C, RISC-V Assembly
+Simulation	Verilator, GTKWave
+Synthesis	Yosys
+Physical Design	OpenLane, OpenROAD
+STA	OpenSTA
+Layout / DRC	Magic, KLayout
+LVS	Netgen
+PDK	SKY130
+Scripting	Python, Tcl, Bash
+📂 Project Scope
+
+This repository documents the complete implementation journey:
+
+Firmware → RTL → Verification → Synthesis → Floorplan → Power Planning → Placement → CTS → Routing → Extraction → STA → MCA → Power → DRC/LVS → GDSII
+
+Detailed implementation results, reports, and screenshots are provided throughout the repository.
+
+📌 Project Highlights
+RISC-V based SoC subsystem
+PicoRV32 processor integration
+CPU-to-AXI4-Lite bridge
+1 Master / 3 Slave AXI4-Lite architecture
+ROM + SRAM + UART integration
+Firmware-to-hardware execution flow
+RTL functional verification
+Technology-mapped synthesis
+Complete RTL-to-GDSII physical implementation
+Post-route timing analysis
+RC-Min / RC-Nom / RC-Max MCA
+Power analysis
+DRC and LVS verification
+Final GDSII generation
   
