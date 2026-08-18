@@ -789,7 +789,7 @@ Verification focused on:
 # 6.4 Waveform Analysis
 Simulation waveforms were analyzed to verify signal-level behavior and transaction sequencing.
 ![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/6e23043a80a8a25e03d4ec58540bf1e93dbffed1/waveforms/waveform6.png)
-The section of  complete waveforms are stored in the section : ```text waveforms```
+The section of  complete waveforms are stored in the section : ``` waveforms```
 ## 7. RTL Synthesis
 ## 7.1 Synthesis Flow
 The RTL was synthesized using **Yosys** and mapped to the **SKY130 standard-cell library**.
