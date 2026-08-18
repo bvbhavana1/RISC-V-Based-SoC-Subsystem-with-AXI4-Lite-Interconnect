@@ -29,3 +29,13 @@ The design integrates a **PicoRV32 RISC-V processor**, CPU-to-AXI bridge, AXI4-L
                          │ ROM │  │ SRAM │  │ UART │
                          │ S0  │  │  S1  │  │  S2  │
                          └─────┘  └──────┘  └──────┘
+```
+Configuration: 1 AXI4-Lite Master → 3 AXI4-Lite Slaves
+
+Memory Map:
+
+Component	Function	Base Address
+PicoRV32	RISC-V processing core	—
+ROM	Program / instruction memory	0x0000_0000
+SRAM	Read/write data memory	0x0001_0000
+UART	Serial communication peripheral	0x1000_0000
