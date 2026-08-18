@@ -165,4 +165,1152 @@ Detailed implementation results, reports, and screenshots are provided throughou
 * Power analysis
 * DRC and LVS verification
 * Final GDSII generation
-  
+-----------------------------------------------------------------------------------------------------------------------------------------------
+## 1. Objectives
+* Design a RISC-V based SoC subsystem using Verilog HDL.
+* Integrate the PicoRV32 RISC-V processor with an AXI4-Lite interconnect.
+* Develop a CPU-to-AXI bridge for communication between the processor and AXI-based peripherals.
+* Integrate ROM, SRAM, and UART peripherals.
+* Verify RTL functionality using simulation and waveform analysis.
+* Perform RTL synthesis using Yosys.
+* Implement the synthesized design through a complete RTL-to-GDSII flow.
+* Analyze timing across different RC corners.
+* Perform power and physical verification analysis.
+* Generate and verify the final GDSII layout.
+
+# 3. System Architecture
+
+## 3.1 Overall Architecture
+
+The SoC subsystem consists of a PicoRV32 RISC-V processor connected to three AXI4-Lite slave peripherals through a CPU-to-AXI bridge and AXI4-Lite interconnect.
+
+```text
+                         +----------------------+
+                         |    PicoRV32 RISC-V   |
+                         |         CPU          |
+                         +----------+-----------+
+                                    |
+                         Native Memory Interface
+                                    |
+                         +----------v-----------+
+                         |    CPU-to-AXI Bridge |
+                         +----------+-----------+
+                                    |
+                              AXI4-Lite Master
+                                    |
+                         +----------v-----------+
+                         | AXI4-Lite Interconnect|
+                         |   + Address Decoder   |
+                         +----+--------+---------+
+                              |        | 
+                         +----v--+  +--v----+  +---------+
+                         |  ROM  |  | SRAM  |  |  UART   |
+                         |  S0   |  |  S1   |  |   S2    |
+                         +-------+  +-------+  +---------+
+```
+
+### AXI Configuration
+
+* **1 AXI4-Lite Master**
+* **3 AXI4-Lite Slaves**
+* **32-bit AXI4-Lite data interface**
+* Address-based slave selection
+* Dedicated address decoder
+
+---
+
+## 3.2 PicoRV32 RISC-V CPU
+
+PicoRV32 acts as the main processing element of the SoC subsystem.
+
+The processor provides:
+
+* Program Counter
+* Register File
+* Instruction Decoder
+* ALU
+* Load/Store Unit
+* Memory Interface
+* Interrupt handling
+
+The CPU communicates with the subsystem through its native memory interface:
+
+```text
+mem_valid
+mem_ready
+mem_addr[31:0]
+mem_wdata[31:0]
+mem_rdata[31:0]
+mem_wstrb[3:0]
+```
+
+---
+
+## 3.3 CPU-to-AXI Bridge
+
+The CPU-to-AXI bridge translates PicoRV32 native memory transactions into AXI4-Lite transactions.
+
+The bridge handles:
+
+* Read transactions
+* Write transactions
+* Address generation
+* Write data transfer
+* Read data reception
+* Response handling
+* Transaction sequencing
+* FSM-based control
+
+---
+
+## 3.4 AXI4-Lite Interconnect
+
+The AXI4-Lite interconnect acts as the central communication fabric between the processor and peripheral slaves.
+
+### Configuration
+
+```text
+1 Master → 3 Slaves
+```
+
+The interconnect performs address-based slave selection and routes AXI transactions to the appropriate peripheral.
+
+---
+
+## 3.5 ROM
+
+The ROM provides read-only program/instruction storage.
+
+| Parameter    | Value                        |
+| ------------ | ---------------------------- |
+| Function     | Program / Instruction Memory |
+| Access       | Read Only                    |
+| Base Address | `0x0000_0000`                |
+| Interface    | AXI4-Lite                    |
+
+---
+
+## 3.6 SRAM
+
+The SRAM provides read/write data storage.
+
+| Parameter    | Value         |
+| ------------ | ------------- |
+| Function     | Data Memory   |
+| Access       | Read / Write  |
+| Base Address | `0x0001_0000` |
+| Interface    | AXI4-Lite     |
+
+---
+
+## 3.7 UART
+
+The UART is implemented as an AXI4-Lite peripheral and provides serial communication.
+
+### UART Features
+
+* AXI4-Lite interface
+* UART TX
+* UART RX
+* FIFO/buffer-based data handling
+* FSM-based control
+* 8N1 serial communication
+
+External interfaces:
+
+```text
+uart_tx
+uart_rx
+```
+
+Base address:
+
+```text
+0x1000_0000
+```
+
+---
+
+# 4. AXI4-Lite Architecture
+
+## 4.1 AXI4-Lite Master
+
+The CPU-to-AXI bridge acts as the AXI4-Lite master and generates read/write transactions based on PicoRV32 memory requests.
+
+---
+
+## 4.2 AXI4-Lite Slaves
+
+The subsystem contains three AXI4-Lite slaves:
+
+| Slave | Peripheral | Access       | Base Address  |
+| ----- | ---------- | ------------ | ------------- |
+| S0    | ROM        | Read         | `0x0000_0000` |
+| S1    | SRAM       | Read / Write | `0x0001_0000` |
+| S2    | UART       | Read / Write | `0x1000_0000` |
+
+---
+
+## 4.3 Address Mapping
+
+The AXI address decoder determines the target slave based on the transaction address.
+
+```text
+0x0000_0000 → ROM
+0x0001_0000 → SRAM
+0x1000_0000 → UART
+```
+
+---
+
+## 4.4 Read Transaction
+
+A typical AXI4-Lite read transaction follows:
+
+```text
+Master
+  ↓
+ARVALID + Address
+  ↓
+Address Decoder
+  ↓
+Selected Slave
+  ↓
+ARREADY
+  ↓
+Read Data + RVALID
+  ↓
+Master
+```
+
+---
+
+## 4.5 Write Transaction
+
+A typical AXI4-Lite write transaction follows:
+
+```text
+Master
+  ↓
+AWVALID + Address
+  +
+WVALID + Write Data
+  ↓
+Address Decoder
+  ↓
+Selected Slave
+  ↓
+Write Response
+  ↓
+Master
+```
+
+---
+
+## 4.6 Address Decoding
+
+The address decoder identifies the appropriate AXI slave using the incoming address and generates the corresponding slave-select signals.
+
+---
+
+# 5. Design Specifications
+
+## 5.1 Clock & Timing Constraints
+
+| Constraint              |         Value |
+| ----------------------- | ------------: |
+| Clock Period            |     **20 ns** |
+| Target Frequency        |    **50 MHz** |
+| Maximum Fanout          |         **8** |
+| Maximum Transition      |    **1.5 ns** |
+| Maximum Capacitance     |    **0.5 pF** |
+| Output Capacitance Load | **17.653 fF** |
+
+### CTS Constraints
+
+| Constraint              |       Value |
+| ----------------------- | ----------: |
+| Clock Buffer Fanout     |      **16** |
+| CTS Target Skew         |  **150 ps** |
+| CTS Maximum Capacitance | **0.35 pF** |
+
+---
+
+## 5.2 Physical Design Constraints
+
+| Constraint               |               Value |
+| ------------------------ | ------------------: |
+| Die Size                 | **1000 × 1000 µm²** |
+| Target Core Utilization  |             **35%** |
+| Placement Target Density |            **0.65** |
+| Maximum Routing Layer    |  **Metal 4 (met4)** |
+
+---
+
+## 5.3 Placement & Routing Constraints
+
+| Constraint               |      Value |
+| ------------------------ | ---------: |
+| Maximum Wire Length      | **600 µm** |
+| Placement Target Density |   **0.65** |
+| Maximum Routing Layer    |   **met4** |
+
+---
+
+## 5.4 Power Distribution Network Constraints
+
+| Constraint           |     Value |
+| -------------------- | --------: |
+| PDN Vertical Pitch   | **25 µm** |
+| PDN Horizontal Pitch | **25 µm** |
+
+---
+
+# 6. RTL Design
+
+## 6.1 RTL Modules
+
+The RTL implementation contains:
+
+* PicoRV32 CPU
+* CPU-to-AXI bridge
+* AXI4-Lite interconnect
+* AXI address decoder
+* ROM
+* SRAM
+* UART AXI interface
+* UART TX
+* UART RX
+* Top-level SoC integration
+
+---
+
+## 6.2 Combinational Logic
+
+Combinational logic is used for:
+
+* Address decoding
+* AXI routing
+* Control signal generation
+* Data selection
+* Next-state logic
+
+---
+
+## 6.3 Sequential Logic
+
+Sequential logic is used for:
+
+* State registers
+* AXI transaction sequencing
+* UART transmit/receive logic
+* Memory control
+* Clocked control signals
+
+---
+
+## 6.4 FSMs
+
+Finite State Machines are used in transaction-control logic, including the CPU-to-AXI bridge and UART control logic.
+
+---
+
+## 6.5 Clock & Reset
+
+The design uses synchronous clocked logic with reset control for initialization and deterministic operation.
+
+---
+
+## 6.6 UART TX/RX
+
+The UART subsystem implements:
+
+* Transmit logic
+* Receive logic
+* Serial shifting
+* Start-bit detection
+* Stop-bit handling
+* FSM-based control
+* 8N1 communication
+
+---
+
+## 6.7 Memory Interfaces
+
+ROM and SRAM are connected to the AXI4-Lite interconnect through their respective slave interfaces.
+
+---
+
+# 7. RTL Verification
+
+## 7.1 Testbench
+
+Dedicated testbenches were developed for functional verification of the SoC, AXI4-Lite subsystem, and UART.
+
+---
+
+## 7.2 Simulation
+
+RTL simulations were performed to verify the behavior of the designed modules before synthesis.
+
+---
+
+## 7.3 Functional Verification
+
+Verification focused on:
+
+* CPU operation
+* AXI read transactions
+* AXI write transactions
+* Address decoding
+* ROM access
+* SRAM access
+* UART communication
+* Reset behavior
+* Inter-module communication
+
+---
+
+## 7.4 Waveform Analysis
+
+Simulation waveforms were analyzed to verify signal-level behavior and transaction sequencing.
+
+The waveform screenshots are available under:
+
+```text
+screenshot/waveforms/
+```
+
+---
+
+# 8. RTL Synthesis
+
+## 8.1 Synthesis Flow
+
+The RTL was synthesized using **Yosys** and mapped to the **SKY130 standard-cell library**.
+
+```text
+Verilog RTL
+    ↓
+RTL Elaboration
+    ↓
+Process Conversion
+    ↓
+Logic Optimization
+    ↓
+DFF Mapping
+    ↓
+Technology Mapping
+    ↓
+Gate-Level Netlist
+```
+
+---
+
+## 8.2 RTL Elaboration
+
+The RTL hierarchy was elaborated to construct the complete synthesized design representation.
+
+---
+
+## 8.3 Logic Optimization
+
+Logic optimization was performed to simplify the design and improve implementation efficiency.
+
+---
+
+## 8.4 DFF Mapping
+
+Sequential logic was mapped to technology-specific flip-flop cells.
+
+---
+
+## 8.5 Technology Mapping
+
+The optimized RTL was mapped to standard cells from the SKY130 library.
+
+---
+
+## 8.6 Gate-Level Netlist
+
+A technology-mapped gate-level netlist was generated for subsequent physical implementation.
+
+---
+
+## 8.7 Synthesis Reports
+
+Synthesis reports and screenshots are available under:
+
+```text
+screenshot/synthesis/
+```
+
+---
+
+# 9. RTL-to-GDSII Flow
+
+The complete physical design flow was implemented using **OpenLane/OpenROAD** with the SKY130 PDK.
+
+## 9.1 Flow Overview
+
+```text
+RTL
+ ↓
+Synthesis
+ ↓
+Floorplanning
+ ↓
+Power Planning
+ ↓
+Placement
+ ↓
+CTS
+ ↓
+Routing
+ ↓
+Parasitic Extraction
+ ↓
+STA
+ ↓
+MCA
+ ↓
+DRC
+ ↓
+LVS
+ ↓
+GDSII
+```
+
+---
+
+## 9.2 Floorplanning
+
+The floorplanning stage established the die and core dimensions and defined the target core utilization.
+
+Key parameters:
+
+* Die: **1000 × 1000 µm²**
+* Core utilization: **35%**
+* Placement density: **0.65**
+
+Screenshots are available under:
+
+```text
+screenshot/floorplan/
+```
+
+---
+
+## 9.3 Power Planning
+
+The Power Distribution Network was implemented using the defined PDN pitch constraints.
+
+```text
+Vertical Pitch   = 25 µm
+Horizontal Pitch = 25 µm
+```
+
+---
+
+## 9.4 Placement
+
+Standard cells were placed within the defined core area while considering placement density, timing, and routing requirements.
+
+Screenshots are available under:
+
+```text
+screenshot/placement/
+```
+
+---
+
+## 9.5 Clock Tree Synthesis
+
+CTS was performed to build and optimize the clock distribution network.
+
+Key CTS constraints:
+
+```text
+Clock Buffer Fanout       = 16
+Target Clock Skew         = 150 ps
+Maximum Clock Capacitance = 0.35 pF
+```
+
+Screenshots are available under:
+
+```text
+screenshot/cts/
+```
+
+---
+
+## 9.6 Routing
+
+Global and detailed routing were performed using the defined routing constraints.
+
+Maximum routing layer:
+
+```text
+Metal 4 (met4)
+```
+
+Screenshots are available under:
+
+```text
+screenshot/routing/
+```
+
+---
+
+## 9.7 Parasitic Extraction
+
+Post-route parasitic information was extracted to account for interconnect effects during timing analysis.
+
+---
+
+## 9.8 GDSII Generation
+
+The final physical design was streamed out as GDSII for final layout representation and verification.
+
+The final layout screenshots are available under:
+
+```text
+screenshot/gdsii/
+```
+
+---
+
+# 10. Static Timing Analysis
+
+## 10.1 Pre-Route STA
+
+Timing analysis was performed during the implementation flow to evaluate timing behavior at different stages.
+
+---
+
+## 10.2 Post-Route STA
+
+Post-route timing analysis incorporated extracted parasitic effects for more realistic timing evaluation.
+
+---
+
+## 10.3 Setup Analysis
+
+Setup timing was analyzed using the 20 ns clock constraint.
+
+---
+
+## 10.4 Hold Analysis
+
+Hold timing was analyzed to identify minimum-delay violations after physical implementation.
+
+---
+
+## 10.5 WNS & TNS
+
+The final reported timing results include:
+
+* Setup WNS: **13.41 ns**
+* Hold Worst Slack: **0.64 ns**
+* TNS: **0.00 ns**
+
+---
+
+## 10.6 Critical Path
+
+The reported critical path delay is:
+
+```text
+7.34 ns
+```
+
+The 20 ns clock period corresponds to a target frequency of:
+
+```text
+50 MHz
+```
+
+Timing screenshots are documented within the corresponding implementation-stage folders and final sign-off section.
+
+---
+
+# 11. Multi-Corner Analysis (MCA)
+
+## 11.1 RC-Min
+
+RC-Min analysis resulted in:
+
+* Setup Slack: **6.88 ns**
+* Hold Slack: **0.34 ns**
+
+---
+
+## 11.2 RC-Nom
+
+RC-Nom analysis resulted in:
+
+* Setup Slack: **6.75 ns**
+* Hold Slack: **0.31 ns**
+
+---
+
+## 11.3 RC-Max
+
+RC-Max analysis resulted in:
+
+* Setup Slack: **6.61 ns**
+* Hold Slack: **0.28 ns**
+
+---
+
+## 11.4 MCA Results
+
+| RC Corner | Setup Slack |  Hold Slack |
+| --------- | ----------: | ----------: |
+| RC-Min    | **6.88 ns** | **0.34 ns** |
+| RC-Nom    | **6.75 ns** | **0.31 ns** |
+| RC-Max    | **6.61 ns** | **0.28 ns** |
+
+---
+
+## 11.5 Timing Conclusion
+
+The design maintained **positive setup and hold slack across all three analyzed RC corners**, with:
+
+```text
+TNS = 0.00 ns
+```
+
+MCA screenshots are available under:
+
+```text
+screenshot/mca/
+```
+
+---
+
+# 12. Power Analysis
+
+## 12.1 Power Report
+
+Post-route power analysis was performed as part of the final implementation evaluation.
+
+---
+
+## 12.2 Total Power
+
+The reported total power is:
+
+```text
+36.6 mW
+```
+
+---
+
+## 12.3 Power Analysis Summary
+
+| Parameter   |      Result |
+| ----------- | ----------: |
+| Total Power | **36.6 mW** |
+
+Power analysis screenshots are available under:
+
+```text
+screenshot/signoff/power/
+```
+
+---
+
+# 13. Physical Verification
+
+## 13.1 DRC
+
+Design Rule Checking was performed to verify compliance with the physical design rules.
+
+**Result: 0 violations**
+
+---
+
+## 13.2 LVS
+
+Layout Versus Schematic verification was performed to compare the physical layout against the implemented design netlist.
+
+**Result: 0 errors**
+
+---
+
+## 13.3 Verification Results
+
+| Verification |           Result |
+| ------------ | ---------------: |
+| DRC          | **0 violations** |
+| LVS          |     **0 errors** |
+
+The verification results indicate clean DRC and LVS for the reported implementation.
+
+---
+
+# 14. Final Sign-off Results
+
+## 14.1 Area
+
+| Parameter        |         Result |
+| ---------------- | -------------: |
+| Die Area         |   **1.00 mm²** |
+| Core Area        | **0.9653 mm²** |
+| Core Utilization |        **35%** |
+| Total Cells      |     **25,520** |
+
+---
+
+## 14.2 Timing
+
+| Parameter           |       Result |
+| ------------------- | -----------: |
+| Clock Period        |    **20 ns** |
+| Clock Frequency     |   **50 MHz** |
+| Critical Path Delay |  **7.34 ns** |
+| Setup WNS           | **13.41 ns** |
+| Hold Worst Slack    |  **0.64 ns** |
+| TNS                 |  **0.00 ns** |
+
+---
+
+## 14.3 Power
+
+| Parameter   |      Result |
+| ----------- | ----------: |
+| Total Power | **36.6 mW** |
+
+---
+
+## 14.4 DRC/LVS
+
+| Check |           Result |
+| ----- | ---------------: |
+| DRC   | **0 violations** |
+| LVS   |     **0 errors** |
+
+---
+
+## 14.5 MCA Summary
+
+| RC Corner | Setup Slack |  Hold Slack |
+| --------- | ----------: | ----------: |
+| RC-Min    | **6.88 ns** | **0.34 ns** |
+| RC-Nom    | **6.75 ns** | **0.31 ns** |
+| RC-Max    | **6.61 ns** | **0.28 ns** |
+
+---
+
+# 15. Final Layout
+
+## 15.1 GDSII
+
+The final physical implementation was streamed out as a GDSII layout after completion of the RTL-to-GDSII flow.
+
+---
+
+## 15.2 KLayout View
+
+The generated layout was viewed and inspected using KLayout.
+
+---
+
+## 15.3 Final Physical Design
+
+The final layout represents the completed physical implementation after:
+
+```text
+Floorplanning
+→ Placement
+→ CTS
+→ Routing
+→ Extraction
+→ Timing Analysis
+→ Physical Verification
+→ GDSII Generation
+```
+
+Final layout screenshots are available under:
+
+```text
+screenshot/gdsii/
+```
+
+---
+
+# 16. Tools & Technologies
+
+### RTL & Verification
+
+* Verilog HDL
+* PicoRV32
+* C/C++
+* GTKWave
+* Verilator
+
+### Synthesis & Timing
+
+* Yosys
+* OpenSTA
+
+### Physical Design
+
+* OpenLane
+* OpenROAD
+* KLayout
+* Magic
+* Netgen
+
+### Scripting
+
+* Python
+* Tcl
+* Shell / Bash
+
+---
+
+# 17. Technology / PDK
+
+The physical implementation was performed using:
+
+**SKY130 PDK**
+
+The design was mapped to SKY130 standard-cell libraries during synthesis and physical implementation.
+
+---
+
+# 18. Repository Structure
+
+```text
+RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/
+│
+├── README.md
+├── LICENSE
+├── .gitignore
+│
+├── rtl/
+│   ├── cpu/
+│   ├── axi/
+│   ├── memory/
+│   ├── uart/
+│   └── top.v
+│
+├── testbench/
+│   ├── top/
+│   ├── axi/
+│   └── uart/
+│
+├── firmware/
+│
+├── constraints/
+│   └── top.sdc
+│
+├── openlane/
+│   ├── config.json
+│   └── top.json
+│
+├── synthesis/
+│   ├── scripts/
+│   ├── netlist/
+│   └── reports/
+│
+├── physical_design/
+│   ├── floorplan/
+│   ├── placement/
+│   ├── cts/
+│   ├── routing/
+│   ├── extraction/
+│   └── gds/
+│
+├── verification/
+│   ├── drc/
+│   └── lvs/
+│
+├── results/
+│
+├── screenshot/
+│   ├── synthesis/
+│   ├── floorplan/
+│   ├── placement/
+│   ├── cts/
+│   ├── routing/
+│   ├── mca/
+│   ├── signoff/
+│   ├── gdsii/
+│   └── waveforms/
+│
+└── scripts/
+```
+
+---
+
+# 19. How to Run
+
+## 19.1 RTL Simulation
+
+RTL simulation can be performed using the provided RTL and testbench files with the selected simulation environment.
+
+Example:
+
+```bash
+verilator --cc --exe --build rtl/top.v testbench/top/tb_top.cpp
+```
+
+The exact command may vary depending on the selected testbench and simulation configuration.
+
+---
+
+## 19.2 Yosys Synthesis
+
+Synthesis can be performed using Yosys with the project RTL and synthesis constraints/scripts.
+
+Example:
+
+```bash
+yosys
+```
+
+The synthesis scripts and generated reports are maintained under:
+
+```text
+synthesis/
+```
+
+---
+
+## 19.3 OpenLane Flow
+
+The complete physical implementation can be executed using the OpenLane configuration provided in:
+
+```text
+openlane/
+```
+
+The design configuration is defined in:
+
+```text
+openlane/config.json
+```
+
+---
+
+## 19.4 STA
+
+Static Timing Analysis can be performed using OpenSTA with the generated netlist, timing libraries, constraints, and extracted parasitic information.
+
+The main timing constraint is:
+
+```text
+Clock Period = 20 ns
+```
+
+---
+
+## 19.5 MCA
+
+Multi-corner timing analysis evaluates the design under:
+
+```text
+RC-Min
+RC-Nom
+RC-Max
+```
+
+The resulting timing values are documented under:
+
+```text
+screenshot/mca/
+```
+
+---
+
+## 19.6 DRC/LVS
+
+Physical verification is performed using the project's DRC and LVS flow.
+
+Final reported results:
+
+```text
+DRC = 0 violations
+LVS = 0 errors
+```
+
+---
+
+# 20. Results & Conclusion
+
+The project successfully demonstrates the implementation of a **RISC-V based SoC subsystem with AXI4-Lite connectivity**, progressing from RTL design and functional verification through synthesis and physical implementation to final GDSII generation.
+
+### Final Results
+
+```text
+Die Area          = 1.00 mm²
+Core Area         = 0.9653 mm²
+Core Utilization  = 35%
+Total Cells       = 25,520
+
+Clock Period      = 20 ns
+Clock Frequency   = 50 MHz
+Critical Path     = 7.34 ns
+Setup WNS         = 13.41 ns
+Hold Slack        = 0.64 ns
+TNS               = 0.00 ns
+
+Total Power       = 36.6 mW
+
+DRC               = 0 violations
+LVS               = 0 errors
+```
+
+The design maintained positive setup and hold slack across the analyzed RC corners:
+
+```text
+RC-Min : Setup = 6.88 ns | Hold = 0.34 ns
+RC-Nom : Setup = 6.75 ns | Hold = 0.31 ns
+RC-Max : Setup = 6.61 ns | Hold = 0.28 ns
+```
+
+Overall, the project provided practical exposure to the complete **RTL-to-GDSII ASIC design flow**, including RISC-V architecture, AXI4-Lite integration, RTL verification, synthesis, physical design, timing analysis, power analysis, parasitic extraction, and physical verification.
+
+---
+
+# 21. Future Improvements
+
+Potential future improvements include:
+
+* Increasing the operating frequency.
+* Optimizing area and power consumption.
+* Improving AXI interconnect scalability.
+* Adding additional AXI-based peripherals.
+* Enhancing UART functionality.
+* Adding interrupt-driven peripheral support.
+* Exploring deeper RISC-V SoC integration.
+* Performing more extensive functional and corner-case verification.
+* Exploring further physical-design optimization for timing, area, and power.
+
+---
+
+# 22. References
+
+* PicoRV32 RISC-V Processor
+* AXI4-Lite specification and AMBA documentation
+* OpenLane documentation
+* OpenROAD documentation
+* Yosys documentation
+* OpenSTA documentation
+* SKY130 PDK documentation
+* KLayout documentation
+* Verilator documentation
+
+---
+
+# 23. Acknowledgements
+
+I sincerely thank **NIELIT, Ministry of Electronics & Information Technology (MeitY), eChipHub, and SoCTeamup Semiconductors** for providing the internship opportunity and hands-on exposure to the semiconductor design ecosystem.
+
+I also thank my mentors and everyone who guided me throughout the internship and supported me during the implementation and debugging stages.
+
+This internship provided valuable practical experience in **RTL Design, RISC-V, SoC Design, AXI4-Lite, ASIC Physical Design, Static Timing Analysis, and RTL-to-GDSII implementation**.
+
