@@ -127,7 +127,7 @@ The design was evaluated under three RC extraction conditions to analyze timing 
 ```                    
 ## 📸 Final Layout
 Final GDSII / KLayout View
-![image alt]()
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/aaff1535f34c61e5af1d9f5bcebc35f3a194676d/screenshots/gdsII/gds2.png)
 The final GDSII represents the completed physical implementation of the RISC-V based SoC subsystem after synthesis, floorplanning, placement, CTS, routing, extraction, timing analysis, and physical verification.
 
 🛠️ Technology & Tools
