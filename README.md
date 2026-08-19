@@ -887,7 +887,7 @@ Clock Buffer Fanout       = 16
 Target Clock Skew         = 150 ps
 Maximum Clock Capacitance = 0.35 pF
 ```
-![image alt]()
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/0b9cee97b58e83eadfd0ac4799f4d3defc2e9f72/screenshots/Clock_tree_synthesis/cts_2.png)
 Screenshots are available under:
 ```text
 screenshots/cts/
