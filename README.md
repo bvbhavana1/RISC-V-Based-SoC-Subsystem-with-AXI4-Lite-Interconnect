@@ -819,7 +819,7 @@ The optimized RTL was mapped to standard cells from the SKY130 library.
 # 7.6 Gate-Level Netlist
 A technology-mapped gate-level netlist was generated for subsequent physical implementation.
 # 7.7 Synthesis Reports
-![image alt]()
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/753a9bcf67276aa72ec3a123fe4b47b0a6b10d26/screenshots/synthesis/area%20report.png)
 Synthesis reports and screenshots are available under:
 ```text
 screenshots/synthesis/
