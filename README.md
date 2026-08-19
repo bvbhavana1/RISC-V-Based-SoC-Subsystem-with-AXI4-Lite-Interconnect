@@ -819,6 +819,7 @@ The optimized RTL was mapped to standard cells from the SKY130 library.
 # 7.6 Gate-Level Netlist
 A technology-mapped gate-level netlist was generated for subsequent physical implementation.
 # 7.7 Synthesis Reports
+![image alt]()
 Synthesis reports and screenshots are available under:
 ```text
 screenshots/synthesis/
@@ -859,6 +860,7 @@ Key parameters:
 * Die: **1000 × 1000 µm²**
 * Core utilization: **35%**
 * Placement density: **0.65**
+ ![image alt]()
 Screenshots are available under:
 ```text
 screenshots/floorplan/
@@ -871,6 +873,7 @@ Horizontal Pitch = 25 µm
 ```
 ## 8.4 Placement
 Standard cells were placed within the defined core area while considering placement density, timing, and routing requirements.
+![image alt]()
 Screenshots are available under:
 
 ```text
@@ -884,12 +887,14 @@ Clock Buffer Fanout       = 16
 Target Clock Skew         = 150 ps
 Maximum Clock Capacitance = 0.35 pF
 ```
+![image alt]()
 Screenshots are available under:
 ```text
 screenshots/cts/
 ```
 ## 8.6 Routing
 Global and detailed routing were performed using the defined routing constraints.
+![image alt]()
 Maximum routing layer:
 ```text
 Metal 4 (met4)
@@ -945,7 +950,9 @@ RC-Max analysis resulted in:
 | RC-Min    | **6.88 ns** | **0.34 ns** |
 | RC-Nom    | **6.75 ns** | **0.31 ns** |
 | RC-Max    | **6.61 ns** | **0.28 ns** |
-
+![image alt]()
+![image alt]()
+![image alt]()
 ## 10.5 Timing Conclusion
 The design maintained **positive setup and hold slack across all three analyzed RC corners**, with:
 ```text
@@ -959,7 +966,7 @@ screenshots/multi_corner_analysis/
 ## 11. Power Analysis
 ## 11.1 Power Report
 Post-route power analysis was performed as part of the final implementation evaluation.
-
+![image alt]()
 ## 11.2 Total Power
 The reported total power is: ```text 36.6 mW ```
 
@@ -975,10 +982,12 @@ screenshots/signoff/
 ## 12.1 DRC
 Design Rule Checking was performed to verify compliance with the physical design rules.
 **Result: 0 violations**
+![image alt]()
 
 ## 12.2 LVS
 Layout Versus Schematic verification was performed to compare the physical layout against the implemented design netlist.
 **Result: 0 errors**
+![image alt]()
 
 ## 12.3 Verification Results
 | Verification |           Result |
@@ -986,6 +995,7 @@ Layout Versus Schematic verification was performed to compare the physical layou
 | DRC          | **0 violations** |
 | LVS          |     **0 errors** |
 The verification results indicate clean DRC and LVS for the reported implementation.
+![image alt]()
 
 ## 13. Final Sign-off Results
 ## 13.1 Area
