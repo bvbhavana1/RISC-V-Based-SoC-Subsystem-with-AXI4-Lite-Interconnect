@@ -894,7 +894,7 @@ screenshots/cts/
 ```
 ## 8.6 Routing
 Global and detailed routing were performed using the defined routing constraints.
-![image alt]()
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/cf7b5d0b0b338415478e792932ac3cda5f204772/screenshots/routing/routing_3.png)
 Maximum routing layer:
 ```text
 Metal 4 (met4)
@@ -953,6 +953,7 @@ RC-Max analysis resulted in:
 ![image alt]()
 ![image alt]()
 ![image alt]()
+
 ## 10.5 Timing Conclusion
 The design maintained **positive setup and hold slack across all three analyzed RC corners**, with:
 ```text
