@@ -873,7 +873,7 @@ Horizontal Pitch = 25 µm
 ```
 ## 8.4 Placement
 Standard cells were placed within the defined core area while considering placement density, timing, and routing requirements.
-![image alt]()
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/f9fbbf5dc0d8c605c0e8a56d1e1ab74b4aee3d91/screenshots/placement/placement_4.png)
 Screenshots are available under:
 
 ```text
