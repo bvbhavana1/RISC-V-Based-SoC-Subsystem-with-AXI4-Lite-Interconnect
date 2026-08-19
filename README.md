@@ -860,7 +860,7 @@ Key parameters:
 * Die: **1000 × 1000 µm²**
 * Core utilization: **35%**
 * Placement density: **0.65**
- ![image alt]()
+ ![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/2f749a962da8b3d14b350a02d0879da42f582d30/screenshots/floorplan/floorplan_1.png)
 Screenshots are available under:
 ```text
 screenshots/floorplan/
