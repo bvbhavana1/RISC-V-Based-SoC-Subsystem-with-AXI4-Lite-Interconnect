@@ -36,6 +36,20 @@ The design integrates a **PicoRV32 RISC-V processor**, CPU-to-AXI bridge, AXI4-L
                          │ ROM │  │ SRAM │  │ UART │
                          │ S0  │  │  S1  │  │  S2  │
                          └─────┘  └──────┘  └──────┘
+![image alt]()
+```
+Repository Structure for the screenshots of this project :
+```text
+├── screenshots/
+│   ├── synthesis
+│   ├── floorplan
+│   ├── placement
+│   ├── Clock_tree_synthesis
+│   ├── routing
+│   ├── signoff
+│   ├──  gdsII
+│   ├── multi_corner_analysis
+│   └──architecture
 ```
 ## Architecture : 1 AXI4-Lite Master → 3 AXI4-Lite Slaves
 Memory Map
@@ -44,6 +58,7 @@ PicoRV32	                      RISC-V processing core	                  —
 ROM	                      Program / instruction memory	               0x0000_0000
 SRAM	                        Read/write data memory	                 0x0001_0000
 UART	                      Serial communication peripheral	           0x1000_0000
+![image alt]()
 
 ## ⭐ Final Implementation Results
 The design was taken through the complete physical implementation flow and evaluated for area, timing, power, and physical verification. 
@@ -288,45 +303,45 @@ The subsystem contains three AXI4-Lite slaves:
 
 ## 3.3 Address Mapping
 The AXI address decoder determines the target slave based on the transaction address.
-```text
-0x0000_0000 → ROM
-0x0001_0000 → SRAM
-0x1000_0000 → UART
-```
+      ```text
+      0x0000_0000 → ROM
+      0x0001_0000 → SRAM
+      0x1000_0000 → UART
+      ```
 ## 3.4 Read Transaction
 A typical AXI4-Lite read transaction follows:
-```text
-Master
-  ↓
-ARVALID + Address
-  ↓
-Address Decoder
-  ↓
-Selected Slave
-  ↓
-ARREADY
-  ↓
-Read Data + RVALID
-  ↓
-Master
-```
+        ```text
+        Master
+          ↓
+        ARVALID + Address
+          ↓
+        Address Decoder
+          ↓
+        Selected Slave
+          ↓
+        ARREADY
+          ↓
+        Read Data + RVALID
+          ↓
+        Master
+        ```
 ## 3.5 Write Transaction
 A typical AXI4-Lite write transaction follows:
 ```text
-Master
-  ↓
-AWVALID + Address
-  +
-WVALID + Write Data
-  ↓
-Address Decoder
-  ↓
-Selected Slave
-  ↓
-Write Response
-  ↓
-Master
-```
+            Master
+              ↓
+            AWVALID + Address
+              +
+            WVALID + Write Data
+              ↓
+            Address Decoder
+              ↓
+            Selected Slave
+              ↓
+            Write Response
+              ↓
+            Master
+ ```
 ## 3.6 Address Decoding
 The address decoder identifies the appropriate AXI slave using the incoming address and generates the corresponding slave-select signals.
 
@@ -399,28 +414,28 @@ mem_wstrb = 4'b1111  → 32-bit Write
 ```
 # 3.10 PicoRV32 ↔ AXI4-Lite Bridge
 The native PicoRV32 memory interface is converted into the **AXI4-Lite protocol** by the bridge.
-```text
-┌──────────────────┐
-│    PicoRV32      │
-│    RV32I CPU     │
-└────────┬─────────┘
-         │ Native Memory Interface
-         │
-         ▼
-┌────────────────────────┐
-│     AXI4-Lite Bridge   │
-│                        │
-│      Bridge FSM        │
-└────────┬───────────────┘
-         │ AXI4-Lite
-         │
-         ▼
-┌────────────────────────┐
-│    AXI Interconnect    │
-└───────┬──────┬─────────┘     
-        ▼      ▼
-      ROM    SRAM/UART
-```
+            ```text
+            ┌──────────────────┐
+            │    PicoRV32      │
+            │    RV32I CPU     │
+            └────────┬─────────┘
+                     │ Native Memory Interface
+                     │
+                     ▼
+            ┌────────────────────────┐
+            │     AXI4-Lite Bridge   │
+            │                        │
+            │      Bridge FSM        │
+            └────────┬───────────────┘
+                     │ AXI4-Lite
+                     │
+                     ▼
+            ┌────────────────────────┐
+            │    AXI Interconnect    │
+            └───────┬──────┬─────────┘     
+                    ▼      ▼
+                  ROM    SRAM/UART
+          ```
 The bridge performs the following conversion:
 ```text
 PicoRV32 Native Memory Request
@@ -895,10 +910,7 @@ Target Clock Skew         = 150 ps
 Maximum Clock Capacitance = 0.35 pF
 ```
 ![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/0b9cee97b58e83eadfd0ac4799f4d3defc2e9f72/screenshots/Clock_tree_synthesis/cts_2.png)
-Screenshots are available under:
-```text
-screenshots/cts/
-```
+
 ## 8.6 Routing
 Global and detailed routing were performed using the defined routing constraints.
 ![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/cf7b5d0b0b338415478e792932ac3cda5f204772/screenshots/routing/routing_3.png)
