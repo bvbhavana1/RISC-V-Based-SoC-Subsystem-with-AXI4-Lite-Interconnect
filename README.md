@@ -993,7 +993,7 @@ screenshots/signoff/
 ## 12.1 DRC
 Design Rule Checking was performed to verify compliance with the physical design rules.
 **Result: 0 violations**
-![image alt]()
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/69c229fe74d738a4bbd0fa454e1ecc284b32ed4b/screenshots/signoff/signoff_drc.png)
 
 ## 12.2 LVS
 Layout Versus Schematic verification was performed to compare the physical layout against the implemented design netlist.
