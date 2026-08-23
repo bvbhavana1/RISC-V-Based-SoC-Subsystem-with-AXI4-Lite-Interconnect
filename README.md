@@ -59,7 +59,7 @@ PicoRV32	                      RISC-V processing core	                  —
 ROM	                      Program / instruction memory	               0x0000_0000
 SRAM	                        Read/write data memory	                 0x0001_0000
 UART	                      Serial communication peripheral	           0x1000_0000
-![image alt]()
+
 
 ## ⭐ Final Implementation Results
 The design was taken through the complete physical implementation flow and evaluated for area, timing, power, and physical verification. 
