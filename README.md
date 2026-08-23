@@ -148,7 +148,7 @@ The design was evaluated under three RC extraction conditions to analyze timing 
                             ▼
                          GDSII
 ```                    
-## 📸 Final Layout
+##  Final Layout
 Final GDSII / KLayout View
 ![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/aaff1535f34c61e5af1d9f5bcebc35f3a194676d/screenshots/gdsII/gds2.png)
 The final GDSII represents the completed physical implementation of the RISC-V based SoC subsystem after synthesis, floorplanning, placement, CTS, routing, extraction, timing analysis, and physical verification.
@@ -168,7 +168,7 @@ The final GDSII represents the completed physical implementation of the RISC-V b
 | **PDK**             | SKY130               |
 | **Scripting**       | Python, Tcl, Bash    |
 
-## 📂 Project Scope
+##  Project Scope
 This repository documents the complete implementation journey:
 Firmware → RTL → Verification → Synthesis → Floorplan → Power Planning → Placement → CTS → Routing → Extraction → STA → MCA → Power → DRC/LVS → GDSII
 Detailed implementation results, reports, and screenshots are provided throughout the repository.
