@@ -977,7 +977,7 @@ screenshots/multi_corner_analysis/
 ## 11. Power Analysis
 ## 11.1 Power Report
 Post-route power analysis was performed as part of the final implementation evaluation.
-![image alt]()
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/53b9ec69a8421aea091857cef130965fda0a09c5/screenshots/signoff/signoff_power.png)
 ## 11.2 Total Power
 The reported total power is: ```text 36.6 mW ```
 
