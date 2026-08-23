@@ -998,7 +998,7 @@ Design Rule Checking was performed to verify compliance with the physical design
 ## 12.2 LVS
 Layout Versus Schematic verification was performed to compare the physical layout against the implemented design netlist.
 **Result: 0 errors**
-![image alt]()
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/a031217dfc71db325e3d93102de974836b942788/screenshots/signoff/signoff_lvs.png)
 
 ## 12.3 Verification Results
 | Verification |           Result |
@@ -1006,7 +1006,6 @@ Layout Versus Schematic verification was performed to compare the physical layou
 | DRC          | **0 violations** |
 | LVS          |     **0 errors** |
 The verification results indicate clean DRC and LVS for the reported implementation.
-![image alt]()
 
 ## 13. Final Sign-off Results
 ## 13.1 Area
