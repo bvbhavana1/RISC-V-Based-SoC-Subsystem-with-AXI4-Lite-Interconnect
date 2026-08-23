@@ -36,8 +36,9 @@ The design integrates a **PicoRV32 RISC-V processor**, CPU-to-AXI bridge, AXI4-L
                          │ ROM │  │ SRAM │  │ UART │
                          │ S0  │  │  S1  │  │  S2  │
                          └─────┘  └──────┘  └──────┘
-![image alt]()
 ```
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/dda77e3ee541b4b17b761f87df48b649dedc3cc1/screenshots/architecture/architecture.png.jpeg)
+
 Repository Structure for the screenshots of this project :
 ```text
 ├── screenshots/
