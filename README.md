@@ -959,7 +959,8 @@ RC-Max analysis resulted in:
 | RC-Max    | **6.61 ns** | **0.28 ns** |
 RC-Min :
 ![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/69f0e35efb30390abc624680bb7fc5db172c7530/screenshots/multi_cornner_analysis/MCA_min.png)
-![image alt]()
+RC-Nom :
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/dbd8bcac9a9cd0e19ba7138c12504c53aea0237c/screenshots/multi_cornner_analysis/MCA_nom.png)
 ![image alt]()
 
 ## 10.5 Timing Conclusion
