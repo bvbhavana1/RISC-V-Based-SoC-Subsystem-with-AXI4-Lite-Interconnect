@@ -1043,7 +1043,7 @@ The verification results indicate clean DRC and LVS for the reported implementat
 ## 14. Final Layout
 ## 14.1 GDSII
 The final physical implementation was streamed out as a GDSII layout after completion of the RTL-to-GDSII flow.
-![image alt]()
+![image alt](https://github.com/bvbhavana1/RISC-V-Based-SoC-Subsystem-with-AXI4-Lite-Interconnect/blob/d6cdb5a7abce6b5770d88a121ad5d95c90c7b3bf/screenshots/gdsII/gds1.png)
 # 14.2 KLayout View
 The generated layout was viewed and inspected using KLayout.
 # 14.3 Final Physical Design
