@@ -4,7 +4,7 @@
 [![ASIC](https://img.shields.io/badge/Design-ASIC-orange)]()
 [![PDK](https://img.shields.io/badge/PDK-SKY130-red)]()
 [![Flow](https://img.shields.io/badge/Flow-OpenLane-purple)]()
-[![Target](https://img.shields.io/badge/Target-100%20MHz-success)]()
+[![Target](https://img.shields.io/badge/Target-50%20MHz-success)]()
 [![DRC](https://img.shields.io/badge/DRC-0%20Violations-success)]()
 [![LVS](https://img.shields.io/badge/LVS-0%20Errors-success)]()
 
